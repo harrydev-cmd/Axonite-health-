@@ -60,3 +60,6 @@ export function authenticatePatient(email, password) {
   if (patient && patient.password === password) return patient;
   return null;
 }
+
+
+

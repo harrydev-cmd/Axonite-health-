@@ -1,57 +1,69 @@
 import React, { useState, useRef } from "react";
 import "./App.css";
 import { registerPatient, getAllPatients } from "./lib/patients";
+import { seedPatients } from "./lib/patientData";
 
-const demoUsers = {
-  patient: {
-    email: "patient@example.com",
-    password: "patient123",
-    name: "Alex Johnson",
-  },
-  staff: {
-    email: "doctor@example.com",
-    password: "doctor123",
-    name: "Dr. Sarah Wilson",
-  },
+// Seed demo patients into localStorage on first load
+seedPatients();
+
+const staffUser = {
+  email: "doctor@example.com",
+  password: "doctor123",
+  name: "Dr. Sarah Wilson",
 };
 
 function App() {
-  const [page, setPage] = useState("login"); // "login" | "register"
+  const [page, setPage] = useState("login");
   const [loginType, setLoginType] = useState("patient");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
     setError("");
 
-    const user = demoUsers[loginType];
+    if (loginType === "staff") {
+      if (email === staffUser.email && password === staffUser.password) {
+        setCurrentUser(staffUser);
+        setLoggedIn(true);
+      } else {
+        setError("Invalid staff credentials.");
+      }
+      return;
+    }
 
-    if (email === user.email && password === user.password) {
+    // Patient login — check against all stored patients
+    const patients = getAllPatients();
+    const match = patients.find(
+      (p) =>
+        p.email.toLowerCase() === email.toLowerCase() &&
+        p.password === password
+    );
+
+    if (match) {
+      setCurrentUser(match);
       setLoggedIn(true);
     } else {
-      setError(
-        loginType === "patient"
-          ? "Invalid patient email or password."
-          : "Invalid staff credentials."
-      );
+      setError("Invalid patient email or password.");
     }
   };
 
   const logout = () => {
     setLoggedIn(false);
+    setCurrentUser(null);
     setEmail("");
     setPassword("");
   };
 
   if (loggedIn) {
     return loginType === "patient" ? (
-      <PatientDashboard user={demoUsers.patient} logout={logout} />
+      <PatientDashboard user={currentUser} logout={logout} />
     ) : (
-      <StaffDashboard user={demoUsers.staff} logout={logout} />
+      <StaffDashboard user={currentUser} logout={logout} />
     );
   }
 
@@ -283,6 +295,33 @@ function App() {
 ========================= */
 
 function PatientDashboard({ user, logout }) {
+  // Derive initials from name
+  const initials = user.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  // Format dob nicely if present
+  const formattedDob = user.dob
+    ? new Date(user.dob).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
+    : "—";
+
+  // Last visit = most recent medical history entry
+  const lastVisit =
+    user.medicalHistory && user.medicalHistory.length > 0
+      ? new Date(
+          [...user.medicalHistory].sort((a, b) => new Date(b.date) - new Date(a.date))[0].date
+        ).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+      : "—";
+
+  const firstName = user.name.split(" ")[0];
+
   return (
     <div className="dashboard">
 
@@ -293,7 +332,7 @@ function PatientDashboard({ user, logout }) {
         </div>
 
         <div className="header-user">
-          <div className="avatar">AJ</div>
+          <div className="avatar">{initials}</div>
 
           <div>
             <strong>{user.name}</strong>
@@ -309,39 +348,51 @@ function PatientDashboard({ user, logout }) {
         <div className="dashboard-heading">
           <div>
             <span className="small-label">PATIENT PORTAL</span>
-            <h1>Good morning, Alex 👋</h1>
-            <p>
-              Here's an overview of your health information.
-            </p>
+            <h1>Good morning, {firstName} 👋</h1>
+            <p>Here's an overview of your health information.</p>
           </div>
 
           <div className="health-status">
-            <span>●</span> Health status: Stable
+            <span>●</span> Health status: {user.healthStatus ?? "Stable"}
           </div>
         </div>
 
         <div className="patient-grid">
 
           <div className="profile-card">
-            <div className="profile-avatar">AJ</div>
+            <div className="profile-avatar">{initials}</div>
 
-            <h2>Alex Johnson</h2>
-            <p>Patient ID: AX-10294</p>
+            <h2>{user.name}</h2>
+            <p>Patient ID: {user.id ?? "—"}</p>
 
             <div className="profile-details">
               <div>
                 <span>Date of Birth</span>
-                <strong>14 May 1998</strong>
+                <strong>{formattedDob}</strong>
               </div>
 
               <div>
                 <span>Blood Group</span>
-                <strong>O+</strong>
+                <strong>{user.bloodGroup ?? "—"}</strong>
               </div>
+
+              {user.allergies && (
+                <div>
+                  <span>Allergies</span>
+                  <strong>{user.allergies}</strong>
+                </div>
+              )}
+
+              {user.emergencyContact && (
+                <div>
+                  <span>Emergency Contact</span>
+                  <strong>{user.emergencyContact}</strong>
+                </div>
+              )}
 
               <div>
                 <span>Last Visit</span>
-                <strong>08 Sep 2026</strong>
+                <strong>{lastVisit}</strong>
               </div>
             </div>
           </div>
@@ -352,47 +403,33 @@ function PatientDashboard({ user, logout }) {
                 <span className="card-icon">♥</span>
                 <h3>Medical History</h3>
               </div>
-
               <button>View all</button>
             </div>
 
-            <div className="medical-entry">
-              <div className="timeline-dot"></div>
-
-              <div>
-                <strong>General Checkup</strong>
-                <span>08 September 2026</span>
-                <p>
-                  Routine health examination. No major
-                  abnormalities detected.
-                </p>
-              </div>
-            </div>
-
-            <div className="medical-entry">
-              <div className="timeline-dot"></div>
-
-              <div>
-                <strong>Blood Test</strong>
-                <span>02 August 2026</span>
-                <p>
-                  Complete blood count and metabolic panel.
-                </p>
-              </div>
-            </div>
-
-            <div className="medical-entry">
-              <div className="timeline-dot"></div>
-
-              <div>
-                <strong>Dental Checkup</strong>
-                <span>15 June 2026</span>
-                <p>
-                  Routine dental examination.
-                </p>
-              </div>
-            </div>
-
+            {user.medicalHistory && user.medicalHistory.length > 0 ? (
+              [...user.medicalHistory]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .map((entry, i) => (
+                  <div className="medical-entry" key={i}>
+                    <div className="timeline-dot"></div>
+                    <div>
+                      <strong>{entry.title}</strong>
+                      <span>
+                        {new Date(entry.date).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                      <p>{entry.details}</p>
+                    </div>
+                  </div>
+                ))
+            ) : (
+              <p style={{ color: "var(--muted)", fontSize: 12, marginTop: 20 }}>
+                No medical history recorded.
+              </p>
+            )}
           </div>
 
         </div>
@@ -407,14 +444,14 @@ function PatientDashboard({ user, logout }) {
 
           <div className="stat-card">
             <span>Prescriptions</span>
-            <strong>3</strong>
+            <strong>{user.medications ? user.medications.length : 0}</strong>
             <small>Active medications</small>
           </div>
 
           <div className="stat-card">
-            <span>Lab Results</span>
-            <strong>2</strong>
-            <small>Recent results</small>
+            <span>Medical Records</span>
+            <strong>{user.medicalHistory ? user.medicalHistory.length : 0}</strong>
+            <small>Total entries</small>
           </div>
 
         </div>
