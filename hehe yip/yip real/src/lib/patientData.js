@@ -330,11 +330,10 @@ const SEEDED_KEY = "axonite_seeded";
 
 /**
  * Seeds localStorage with the static patient data on first run.
- * Skips if already seeded to avoid duplicates.
+ * Always merges new patients from seedPatientData that aren't already stored,
+ * so adding new patients to this file takes effect without manual cache clearing.
  */
 export function seedPatients() {
-  if (localStorage.getItem(SEEDED_KEY)) return;
-
   const existing = (() => {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? [];
@@ -344,11 +343,14 @@ export function seedPatients() {
   })();
 
   const existingIds = new Set(existing.map((p) => p.id));
-  const merged = [
-    ...existing,
-    ...seedPatientData.filter((p) => !existingIds.has(p.id)),
-  ];
+  const newPatients = seedPatientData.filter((p) => !existingIds.has(p.id));
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+  if (newPatients.length > 0) {
+    const merged = [...existing, ...newPatients];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+  }
+
+  // Keep the seeded flag so we don't re-run unnecessarily on future loads
+  // when there are no new patients to add
   localStorage.setItem(SEEDED_KEY, "true");
 }
