@@ -1,0 +1,354 @@
+/**
+ * patientData.js
+ *
+ * Static seed data for pre-existing patients.
+ * Call seedPatients() once at app startup to populate localStorage.
+ */
+
+export const seedPatientData = [
+  {
+    id: "P001",
+    name: "Alex Johnson",
+    email: "alex.johnson@example.com",
+    password: "patient123",
+    healthStatus: "Stable",
+    bloodGroup: "O+",
+    emergencyContact: "Jamie Johnson",
+    allergies: "None",
+    idType: "aadhaar",
+    idFileName: "alex_aadhaar.jpg",
+    dob: "1998-05-14",
+    phone: "+91 98765 43210",
+    address: "12, MG Road, Bengaluru, Karnataka",
+    registeredAt: "2026-01-10T09:30:00.000Z",
+    medicalHistory: [
+      {
+        title: "General Checkup",
+        date: "2026-09-08",
+        details: "Routine health examination. No major abnormalities detected.",
+      },
+      {
+        title: "Blood Test",
+        date: "2026-08-02",
+        details: "Complete blood count and metabolic panel. Results normal.",
+      },
+      {
+        title: "Dental Checkup",
+        date: "2026-06-15",
+        details: "Routine dental examination. No cavities found.",
+      },
+    ],
+    medications: [
+      { name: "Vitamin D3", status: "Daily" },
+      { name: "Omega-3", status: "Daily" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P002",
+    name: "Kyoko Hori",
+    email: "kyoko@example.com",
+    password: "kyoko123",
+    healthStatus: "Stable",
+    bloodGroup: "A+",
+    emergencyContact: "Kyosuke Hori",
+    allergies: "Pollen",
+    idType: "passport",
+    idFileName: "kyoko_passport.jpg",
+    dob: "2000-06-06",
+    phone: "+81 90-1234-5678",
+    address: "3-5 Sakura Street, Shibuya, Tokyo",
+    registeredAt: "2026-03-12T10:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Seasonal Allergies",
+        date: "2025-04-18",
+        details: "Mild seasonal allergies. No major complications reported.",
+      },
+      {
+        title: "Minor Ankle Sprain",
+        date: "2025-09-07",
+        details: "Minor right ankle sprain. Fully recovered after rest and physiotherapy.",
+      },
+    ],
+    medications: [
+      { name: "Cetirizine", status: "As needed" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P003",
+    name: "Priya Sharma",
+    email: "priya.sharma@example.com",
+    password: "priya2026",
+    healthStatus: "Under Observation",
+    bloodGroup: "A+",
+    emergencyContact: "Rahul Sharma",
+    allergies: "Penicillin",
+    idType: "aadhaar",
+    idFileName: "priya_aadhaar.pdf",
+    dob: "1995-11-22",
+    phone: "+91 91234 56789",
+    address: "45, Linking Road, Mumbai, Maharashtra",
+    registeredAt: "2026-02-03T11:15:00.000Z",
+    medicalHistory: [
+      {
+        title: "Hypertension Diagnosis",
+        date: "2026-01-15",
+        details: "Mild hypertension detected. Started on low-dose medication.",
+      },
+      {
+        title: "Follow-up Checkup",
+        date: "2026-04-20",
+        details: "Blood pressure improving. Continue current medication.",
+      },
+    ],
+    medications: [
+      { name: "Amlodipine 5mg", status: "Daily" },
+      { name: "Aspirin 75mg", status: "Daily" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P004",
+    name: "Ravi Kumar",
+    email: "ravi.kumar@example.com",
+    password: "ravi@secure1",
+    healthStatus: "Stable",
+    bloodGroup: "B+",
+    emergencyContact: "Sunita Kumar",
+    allergies: "Dust",
+    idType: "driving",
+    idFileName: "ravi_dl.png",
+    dob: "1990-07-08",
+    phone: "+91 87654 32109",
+    address: "78, Anna Nagar, Chennai, Tamil Nadu",
+    registeredAt: "2026-02-18T08:45:00.000Z",
+    medicalHistory: [
+      {
+        title: "Asthma Review",
+        date: "2026-03-10",
+        details: "Mild persistent asthma. Inhaler usage reviewed and adjusted.",
+      },
+    ],
+    medications: [
+      { name: "Salbutamol Inhaler", status: "As needed" },
+      { name: "Fluticasone Inhaler", status: "Twice daily" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P005",
+    name: "Sneha Patel",
+    email: "sneha.patel@example.com",
+    password: "sneha#456",
+    healthStatus: "Stable",
+    bloodGroup: "AB-",
+    emergencyContact: "Nikhil Patel",
+    allergies: "None",
+    idType: "voter",
+    idFileName: "sneha_voterid.jpg",
+    dob: "2001-03-30",
+    phone: "+91 99887 76655",
+    address: "9, Satellite Road, Ahmedabad, Gujarat",
+    registeredAt: "2026-03-05T14:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Annual Physical",
+        date: "2026-05-22",
+        details: "All vitals normal. No concerns.",
+      },
+    ],
+    medications: [],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P006",
+    name: "Mohammed Irfan",
+    email: "irfan.m@example.com",
+    password: "irfan2026!",
+    healthStatus: "Requires Attention",
+    bloodGroup: "O-",
+    emergencyContact: "Fatima Irfan",
+    allergies: "Sulfa drugs",
+    idType: "aadhaar",
+    idFileName: "irfan_aadhaar.pdf",
+    dob: "1987-09-15",
+    phone: "+91 93456 78901",
+    address: "33, Banjara Hills, Hyderabad, Telangana",
+    registeredAt: "2026-03-22T10:20:00.000Z",
+    medicalHistory: [
+      {
+        title: "Type 2 Diabetes Diagnosis",
+        date: "2025-11-10",
+        details: "Fasting blood sugar elevated. Started on Metformin.",
+      },
+      {
+        title: "HbA1c Review",
+        date: "2026-05-14",
+        details: "HbA1c at 7.8%. Diet counselling provided.",
+      },
+    ],
+    medications: [
+      { name: "Metformin 500mg", status: "Twice daily" },
+      { name: "Glimepiride 1mg", status: "Daily" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P007",
+    name: "Ananya Nair",
+    email: "ananya.nair@example.com",
+    password: "ananya789",
+    healthStatus: "Stable",
+    bloodGroup: "A-",
+    emergencyContact: "Suresh Nair",
+    allergies: "Latex",
+    idType: "pan",
+    idFileName: "ananya_pan.jpg",
+    dob: "2000-12-01",
+    phone: "+91 82345 67890",
+    address: "22, Palarivattom, Kochi, Kerala",
+    registeredAt: "2026-04-11T16:30:00.000Z",
+    medicalHistory: [
+      {
+        title: "Thyroid Panel",
+        date: "2026-02-28",
+        details: "TSH slightly elevated. Monitoring every 6 months.",
+      },
+    ],
+    medications: [
+      { name: "Levothyroxine 25mcg", status: "Daily" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P008",
+    name: "Arjun Mehta",
+    email: "arjun.mehta@example.com",
+    password: "arjun@pass",
+    healthStatus: "Stable",
+    bloodGroup: "B-",
+    emergencyContact: "Pooja Mehta",
+    allergies: "None",
+    idType: "aadhaar",
+    idFileName: "arjun_aadhaar.png",
+    dob: "1993-06-25",
+    phone: "+91 70123 45678",
+    address: "5, Connaught Place, New Delhi",
+    registeredAt: "2026-05-07T09:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Sports Injury - Knee",
+        date: "2026-04-03",
+        details: "Ligament strain in left knee during football. Physiotherapy recommended.",
+      },
+      {
+        title: "Physiotherapy Review",
+        date: "2026-06-18",
+        details: "Good recovery progress. Cleared for light activity.",
+      },
+    ],
+    medications: [
+      { name: "Ibuprofen 400mg", status: "As needed" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P009",
+    name: "Divya Reddy",
+    email: "divya.reddy@example.com",
+    password: "divya#321",
+    healthStatus: "Stable",
+    bloodGroup: "AB+",
+    emergencyContact: "Vikram Reddy",
+    allergies: "None",
+    idType: "passport",
+    idFileName: "divya_passport.jpg",
+    dob: "1997-02-14",
+    phone: "+91 96543 21098",
+    address: "17, Jubilee Hills, Hyderabad, Telangana",
+    registeredAt: "2026-06-01T13:45:00.000Z",
+    medicalHistory: [
+      {
+        title: "Migraine Consultation",
+        date: "2026-05-30",
+        details: "Recurrent migraines. Trigger tracking and preventive therapy started.",
+      },
+    ],
+    medications: [
+      { name: "Sumatriptan 50mg", status: "As needed" },
+      { name: "Propranolol 40mg", status: "Daily" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+
+  {
+    id: "P010",
+    name: "Izumi Miyamura",
+    email: "izumi@example.com",
+    password: "izumi123",
+    healthStatus: "Good",
+    bloodGroup: "O+",
+    emergencyContact: "Kyoko Hori",
+    allergies: "None reported",
+    idType: "aadhaar",
+    idFileName: "izumi_aadhaar.jpg",
+    dob: "2000-10-17",
+    phone: "+81 90-9876-5432",
+    address: "7-2 Hanakomachi, Shinjuku, Tokyo",
+    registeredAt: "2026-04-05T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Routine Health Checkup",
+        date: "2026-01-22",
+        details: "Routine examination completed. No significant health concerns found.",
+      },
+      {
+        title: "Minor Hand Injury",
+        date: "2025-11-14",
+        details: "Minor hand injury treated with basic wound care. Fully recovered.",
+      },
+    ],
+    medications: [
+      { name: "Ibuprofen", status: "Only when required" },
+    ],
+    implants: { type: "None", count: 0 },
+  },
+];
+
+const STORAGE_KEY = "axonite_patients";
+const SEEDED_KEY = "axonite_seeded";
+
+/**
+ * Seeds localStorage with the static patient data on first run.
+ * Skips if already seeded to avoid duplicates.
+ */
+export function seedPatients() {
+  if (localStorage.getItem(SEEDED_KEY)) return;
+
+  const existing = (() => {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? [];
+    } catch {
+      return [];
+    }
+  })();
+
+  const existingIds = new Set(existing.map((p) => p.id));
+  const merged = [
+    ...existing,
+    ...seedPatientData.filter((p) => !existingIds.has(p.id)),
+  ];
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+  localStorage.setItem(SEEDED_KEY, "true");
+}
