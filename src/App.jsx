@@ -6,11 +6,20 @@ import { seedPatients } from "./lib/patientData";
 // Seed demo patients into localStorage on first load
 seedPatients();
 
-const staffUser = {
-  email: "doctor@example.com",
-  password: "doctor123",
-  name: "Dr. Sarah Wilson",
-};
+const staffUsers = [
+  {
+    email: "doctor@example.com",
+    password: "doctor123",
+    name: "Dr. Sarah Wilson",
+  },
+  {
+    email: "shoko@example.com",
+    password: "shoko123",
+    name: "Dr. Shoko Ieiri",
+    specialty: "Medical Specialist",
+    affiliation: "Tokyo Jujutsu High",
+  },
+];
 
 function App() {
   const [page, setPage] = useState("login");
@@ -27,8 +36,11 @@ function App() {
     setError("");
 
     if (loginType === "staff") {
-      if (email === staffUser.email && password === staffUser.password) {
-        setCurrentUser(staffUser);
+      const staffMatch = staffUsers.find(
+        (s) => s.email === email && s.password === password
+      );
+      if (staffMatch) {
+        setCurrentUser(staffMatch);
         setLoggedIn(true);
       } else {
         setError("Invalid staff credentials.");

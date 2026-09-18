@@ -323,6 +323,174 @@ export const seedPatientData = [
     ],
     implants: { type: "None", count: 0 },
   },
+
+  {
+    id: "P011",
+    name: "Yuki Yoshikawa",
+    email: "yuki.yoshikawa@example.com",
+    password: "yuki123",
+    healthStatus: "Stable",
+    bloodGroup: "B+",
+    emergencyContact: "MIKI Yoshikawa",
+    allergies: "None reported",
+    registeredAt: "2026-04-12T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Routine School Health Check",
+        date: "2026-04-12",
+        details: "Routine health examination with no significant findings."
+      }
+    ],
+    medications: [],
+    implants: {
+      type: "None",
+      count: 0
+    }
+  },
+
+  {
+    id: "P012",
+    name: "Tooru Ishikawa",
+    email: "tooru.ishikawa@example.com",
+    password: "tooru123",
+    healthStatus: "Stable",
+    bloodGroup: "A-",
+    emergencyContact: "Ayane Ishikawa",
+    allergies: "None reported",
+    registeredAt: "2026-04-15T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Sports Health Check",
+        date: "2026-04-15",
+        details: "Routine examination following school sports activities."
+      }
+    ],
+    medications: [],
+    implants: {
+      type: "None",
+      count: 0
+    }
+  },
+
+  {
+    id: "P013",
+    name: "Kakeru Sengoku",
+    email: "kakeru.sengoku@example.com",
+    password: "sengoku123",
+    healthStatus: "Stable",
+    bloodGroup: "AB+",
+    emergencyContact: "Kozue Sengoku",
+    allergies: "None reported",
+    registeredAt: "2026-04-18T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Annual Health Examination",
+        date: "2026-04-18",
+        details: "Routine school medical examination."
+      }
+    ],
+    medications: [],
+    implants: {
+      type: "None",
+      count: 0
+    }
+  },
+
+  {
+    id: "P014",
+    name: "Remi Ayasaki",
+    email: "remi.ayasaki@example.com",
+    password: "remi123",
+    healthStatus: "Stable",
+    bloodGroup: "B+",
+    emergencyContact: "Ken Ayasaki",
+    allergies: "None reported",
+    registeredAt: "2026-04-20T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Routine Health Check",
+        date: "2026-04-20",
+        details: "Routine school health assessment."
+      }
+    ],
+    medications: [],
+    implants: {
+      type: "None",
+      count: 0
+    }
+  },
+
+  {
+    id: "P015",
+    name: "Sakura Kono",
+    email: "sakura.kono@example.com",
+    password: "sakura123",
+    healthStatus: "Stable",
+    bloodGroup: "A+",
+    emergencyContact: "Shintaro Kono",
+    allergies: "None reported",
+    registeredAt: "2026-04-22T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Routine Health Check",
+        date: "2026-04-22",
+        details: "Routine school medical examination."
+      }
+    ],
+    medications: [],
+    implants: {
+      type: "None",
+      count: 0
+    }
+  },
+
+  {
+    id: "P016",
+    name: "Shu Iura",
+    email: "shu.iura@example.com",
+    password: "shu123",
+    healthStatus: "Stable",
+    bloodGroup: "O+",
+    emergencyContact: "Modoko Iura",
+    allergies: "None reported",
+    registeredAt: "2026-04-25T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Routine Health Check",
+        date: "2026-04-25",
+        details: "Routine school health assessment."
+      }
+    ],
+    medications: [],
+    implants: {
+      type: "None",
+      count: 0
+    }
+  },
+
+  {
+    id: "P017",
+    name: "Akane Yanagi",
+    email: "akane.yanagi@example.com",
+    password: "akane123",
+    healthStatus: "Stable",
+    bloodGroup: "AB-",
+    emergencyContact: "Modoru Yannagi",
+    allergies: "None reported",
+    registeredAt: "2026-04-28T08:00:00.000Z",
+    medicalHistory: [
+      {
+        title: "Routine Health Check",
+        date: "2026-04-28",
+        details: "Routine school medical examination."
+      }
+    ],
+    medications: [],
+    implants: {
+      type: "None",
+      count: 0
+    }
+  },
 ];
 
 const STORAGE_KEY = "axonite_patients";
