@@ -36,10 +36,16 @@ function App() {
   const [syncStatus, setSyncStatus] = useState(null);
   const [appError, setAppError] = useState(null);
 
+  // Log that app loaded
+  React.useEffect(() => {
+    console.log('App component mounted');
+  }, []);
+
   // Initialize cloud sync on app load
   useEffect(() => {
     const initCloud = async () => {
       try {
+        console.log('Initializing cloud sync...');
         if (PROTON_CONFIG.enableCloudSync) {
           // Initialize with configured Proton credentials
           const session = await initProtonSession(
@@ -51,6 +57,8 @@ function App() {
           if (PROTON_CONFIG.debug) {
             console.log('Cloud sync initialized:', getSyncStatus());
           }
+        } else {
+          console.log('Cloud sync disabled, using localStorage');
         }
       } catch (err) {
         console.error('Failed to initialize cloud sync:', err);
