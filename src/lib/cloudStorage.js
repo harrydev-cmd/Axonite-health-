@@ -65,40 +65,51 @@ export async function initProtonSession(email = PROTON_CONFIG.email, apiKey = PR
  * Sync patients data to Proton cloud
  */
 export async function syncPatientsToCloud(patients) {
-  if (syncInProgress || !PROTON_CONFIG.enableCloudSync) return;
+  if (syncInProgress || !PROTON_CONFIG.enableCloudSync) {
+    // Still save to localStorage even if sync disabled
+    localStorage.setItem(STORAGE_KEYS.patients, JSON.stringify(patients));
+    return;
+  }
 
   syncInProgress = true;
   try {
     // Store locally first
     localStorage.setItem(STORAGE_KEYS.patients, JSON.stringify(patients));
 
-    // Try to sync to Proton
-    if (protonSession) {
-      const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/patients`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${protonSession.accessToken}`,
-        },
-        body: JSON.stringify({
-          data: patients,
-          timestamp: new Date().toISOString(),
-        }),
-      });
+    // Try to sync to Proton only if session exists
+    if (protonSession && protonSession.accessToken) {
+      try {
+        const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/patients`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${protonSession.accessToken}`,
+          },
+          body: JSON.stringify({
+            data: patients,
+            timestamp: new Date().toISOString(),
+          }),
+          timeout: 5000,
+        });
 
-      if (response.ok) {
-        localStorage.setItem(STORAGE_KEYS.lastSync, new Date().toISOString());
-        localStorage.setItem(STORAGE_KEYS.syncStatus, 'synced');
-        if (PROTON_CONFIG.debug) console.log('Patients synced to cloud');
-      } else {
-        localStorage.setItem(STORAGE_KEYS.syncStatus, 'sync-failed');
+        if (response.ok) {
+          localStorage.setItem(STORAGE_KEYS.lastSync, new Date().toISOString());
+          localStorage.setItem(STORAGE_KEYS.syncStatus, 'synced');
+          if (PROTON_CONFIG.debug) console.log('Patients synced to cloud');
+        } else {
+          localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
+        }
+      } catch (fetchErr) {
+        // API not available, just use local storage
+        if (PROTON_CONFIG.debug) console.warn('Proton API unavailable, using localStorage:', fetchErr.message);
+        localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
       }
     } else {
-      localStorage.setItem(STORAGE_KEYS.syncStatus, 'pending');
+      localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
     }
   } catch (error) {
     console.error('Failed to sync patients to cloud:', error);
-    localStorage.setItem(STORAGE_KEYS.syncStatus, 'sync-error');
+    localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
   } finally {
     syncInProgress = false;
   }
@@ -108,40 +119,51 @@ export async function syncPatientsToCloud(patients) {
  * Sync staff data to Proton cloud
  */
 export async function syncStaffToCloud(staff) {
-  if (syncInProgress || !PROTON_CONFIG.enableCloudSync) return;
+  if (syncInProgress || !PROTON_CONFIG.enableCloudSync) {
+    // Still save to localStorage even if sync disabled
+    localStorage.setItem(STORAGE_KEYS.staff, JSON.stringify(staff));
+    return;
+  }
 
   syncInProgress = true;
   try {
     // Store locally first
     localStorage.setItem(STORAGE_KEYS.staff, JSON.stringify(staff));
 
-    // Try to sync to Proton
-    if (protonSession) {
-      const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/staff`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${protonSession.accessToken}`,
-        },
-        body: JSON.stringify({
-          data: staff,
-          timestamp: new Date().toISOString(),
-        }),
-      });
+    // Try to sync to Proton only if session exists
+    if (protonSession && protonSession.accessToken) {
+      try {
+        const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/staff`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${protonSession.accessToken}`,
+          },
+          body: JSON.stringify({
+            data: staff,
+            timestamp: new Date().toISOString(),
+          }),
+          timeout: 5000,
+        });
 
-      if (response.ok) {
-        localStorage.setItem(STORAGE_KEYS.lastSync, new Date().toISOString());
-        localStorage.setItem(STORAGE_KEYS.syncStatus, 'synced');
-        if (PROTON_CONFIG.debug) console.log('Staff synced to cloud');
-      } else {
-        localStorage.setItem(STORAGE_KEYS.syncStatus, 'sync-failed');
+        if (response.ok) {
+          localStorage.setItem(STORAGE_KEYS.lastSync, new Date().toISOString());
+          localStorage.setItem(STORAGE_KEYS.syncStatus, 'synced');
+          if (PROTON_CONFIG.debug) console.log('Staff synced to cloud');
+        } else {
+          localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
+        }
+      } catch (fetchErr) {
+        // API not available, just use local storage
+        if (PROTON_CONFIG.debug) console.warn('Proton API unavailable, using localStorage:', fetchErr.message);
+        localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
       }
     } else {
-      localStorage.setItem(STORAGE_KEYS.syncStatus, 'pending');
+      localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
     }
   } catch (error) {
     console.error('Failed to sync staff to cloud:', error);
-    localStorage.setItem(STORAGE_KEYS.syncStatus, 'sync-error');
+    localStorage.setItem(STORAGE_KEYS.syncStatus, 'local-only');
   } finally {
     syncInProgress = false;
   }
@@ -152,24 +174,29 @@ export async function syncStaffToCloud(staff) {
  */
 export async function fetchPatientsFromCloud() {
   try {
-    if (protonSession && PROTON_CONFIG.enableCloudSync) {
-      const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/patients`, {
-        headers: {
-          'Authorization': `Bearer ${protonSession.accessToken}`,
-        },
-      });
+    if (protonSession && protonSession.accessToken && PROTON_CONFIG.enableCloudSync) {
+      try {
+        const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/patients`, {
+          headers: {
+            'Authorization': `Bearer ${protonSession.accessToken}`,
+          },
+          timeout: 5000,
+        });
 
-      if (response.ok) {
-        const cloudData = await response.json();
-        const patients = cloudData.data || [];
-        // Update local cache
-        localStorage.setItem(STORAGE_KEYS.patients, JSON.stringify(patients));
-        if (PROTON_CONFIG.debug) console.log('Patients fetched from cloud');
-        return patients;
+        if (response.ok) {
+          const cloudData = await response.json();
+          const patients = cloudData.data || [];
+          // Update local cache
+          localStorage.setItem(STORAGE_KEYS.patients, JSON.stringify(patients));
+          if (PROTON_CONFIG.debug) console.log('Patients fetched from cloud');
+          return patients;
+        }
+      } catch (err) {
+        if (PROTON_CONFIG.debug) console.warn('Proton API fetch failed:', err.message);
       }
     }
   } catch (error) {
-    console.warn('Failed to fetch patients from cloud, using localStorage:', error.message);
+    console.warn('Failed to fetch patients from cloud:', error.message);
   }
 
   // Fallback to localStorage
@@ -186,24 +213,29 @@ export async function fetchPatientsFromCloud() {
  */
 export async function fetchStaffFromCloud() {
   try {
-    if (protonSession && PROTON_CONFIG.enableCloudSync) {
-      const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/staff`, {
-        headers: {
-          'Authorization': `Bearer ${protonSession.accessToken}`,
-        },
-      });
+    if (protonSession && protonSession.accessToken && PROTON_CONFIG.enableCloudSync) {
+      try {
+        const response = await fetch(`${PROTON_CONFIG.apiUrl}/data/staff`, {
+          headers: {
+            'Authorization': `Bearer ${protonSession.accessToken}`,
+          },
+          timeout: 5000,
+        });
 
-      if (response.ok) {
-        const cloudData = await response.json();
-        const staff = cloudData.data || [];
-        // Update local cache
-        localStorage.setItem(STORAGE_KEYS.staff, JSON.stringify(staff));
-        if (PROTON_CONFIG.debug) console.log('Staff fetched from cloud');
-        return staff;
+        if (response.ok) {
+          const cloudData = await response.json();
+          const staff = cloudData.data || [];
+          // Update local cache
+          localStorage.setItem(STORAGE_KEYS.staff, JSON.stringify(staff));
+          if (PROTON_CONFIG.debug) console.log('Staff fetched from cloud');
+          return staff;
+        }
+      } catch (err) {
+        if (PROTON_CONFIG.debug) console.warn('Proton API fetch failed:', err.message);
       }
     }
   } catch (error) {
-    console.warn('Failed to fetch staff from cloud, using localStorage:', error.message);
+    console.warn('Failed to fetch staff from cloud:', error.message);
   }
 
   // Fallback to localStorage

@@ -15,8 +15,8 @@ export const PROTON_CONFIG = {
   // Proton API endpoint
   apiUrl: 'https://mail-api.proton.me/api',
 
-  // Enable cloud sync
-  enableCloudSync: true,
+  // Enable cloud sync (disabled by default until Proton API is properly configured)
+  enableCloudSync: false,
 
   // Auto-sync interval (ms)
   autoSyncInterval: 30000, // 30 seconds
