@@ -3,6 +3,7 @@ import "./App.css";
 import { registerPatient, getAllPatients } from "./lib/patients";
 import { seedPatients } from "./lib/patientData";
 import { initProtonSession, getSyncStatus } from "./lib/cloudStorage";
+import { PROTON_CONFIG } from "./lib/protonConfig";
 
 // Seed demo patients into localStorage on first load
 seedPatients();
@@ -37,9 +38,18 @@ function App() {
   // Initialize cloud sync on app load
   useEffect(() => {
     const initCloud = async () => {
-      // Try to connect to Proton (optional - will fallback to localStorage)
-      const session = await initProtonSession(email || 'demo@proton.me', 'demo');
-      setSyncStatus(getSyncStatus());
+      if (PROTON_CONFIG.enableCloudSync) {
+        // Initialize with configured Proton credentials
+        const session = await initProtonSession(
+          PROTON_CONFIG.email,
+          PROTON_CONFIG.apiKey
+        );
+        setSyncStatus(getSyncStatus());
+        
+        if (PROTON_CONFIG.debug) {
+          console.log('Cloud sync initialized:', getSyncStatus());
+        }
+      }
     };
     initCloud();
   }, []);
