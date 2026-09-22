@@ -15,8 +15,8 @@ export const seedPatientData = [
     bloodGroup: "O+",
     emergencyContact: "Jamie Johnson",
     allergies: "None",
-    idType: "passport",
-    idFileName: "alex_passport.jpg",
+    idType: "aadhaar",
+    idFileName: "alex_aadhaar.jpg",
     dob: "1998-05-14",
     phone: "+91 98765 43210",
     address: "12, MG Road, Bengaluru, Karnataka",
@@ -74,8 +74,6 @@ export const seedPatientData = [
     ],
     medications: [
       { name: "Cetirizine", status: "As needed" },
-      { name: "Paracetamol 500mg", status: "As needed" },
-      { name: "Aspirin 75mg", status: "As needed" },
     ],
     implants: { type: "None", count: 0 },
   },
@@ -89,8 +87,8 @@ export const seedPatientData = [
     bloodGroup: "A+",
     emergencyContact: "Rahul Sharma",
     allergies: "Penicillin",
-    idType: "passport",
-    idFileName: "priya_passport.pdf",
+    idType: "aadhaar",
+    idFileName: "priya_aadhaar.pdf",
     dob: "1995-11-22",
     phone: "+91 91234 56789",
     address: "45, Linking Road, Mumbai, Maharashtra",
@@ -123,8 +121,8 @@ export const seedPatientData = [
     bloodGroup: "B+",
     emergencyContact: "Sunita Kumar",
     allergies: "Dust",
-    idType: "passport",
-    idFileName: "ravi_passport.png",
+    idType: "driving",
+    idFileName: "ravi_dl.png",
     dob: "1990-07-08",
     phone: "+91 87654 32109",
     address: "78, Anna Nagar, Chennai, Tamil Nadu",
@@ -152,8 +150,8 @@ export const seedPatientData = [
     bloodGroup: "AB-",
     emergencyContact: "Nikhil Patel",
     allergies: "None",
-    idType: "passport",
-    idFileName: "sneha_passport.jpg",
+    idType: "voter",
+    idFileName: "sneha_voterid.jpg",
     dob: "2001-03-30",
     phone: "+91 99887 76655",
     address: "9, Satellite Road, Ahmedabad, Gujarat",
@@ -178,8 +176,8 @@ export const seedPatientData = [
     bloodGroup: "O-",
     emergencyContact: "Fatima Irfan",
     allergies: "Sulfa drugs",
-    idType: "passport",
-    idFileName: "irfan_passport.pdf",
+    idType: "aadhaar",
+    idFileName: "irfan_aadhaar.pdf",
     dob: "1987-09-15",
     phone: "+91 93456 78901",
     address: "33, Banjara Hills, Hyderabad, Telangana",
@@ -212,8 +210,8 @@ export const seedPatientData = [
     bloodGroup: "A-",
     emergencyContact: "Suresh Nair",
     allergies: "Latex",
-    idType: "passport",
-    idFileName: "ananya_passport.jpg",
+    idType: "pan",
+    idFileName: "ananya_pan.jpg",
     dob: "2000-12-01",
     phone: "+91 82345 67890",
     address: "22, Palarivattom, Kochi, Kerala",
@@ -240,8 +238,8 @@ export const seedPatientData = [
     bloodGroup: "B-",
     emergencyContact: "Pooja Mehta",
     allergies: "None",
-    idType: "passport",
-    idFileName: "arjun_passport.png",
+    idType: "aadhaar",
+    idFileName: "arjun_aadhaar.png",
     dob: "1993-06-25",
     phone: "+91 70123 45678",
     address: "5, Connaught Place, New Delhi",
@@ -302,8 +300,8 @@ export const seedPatientData = [
     bloodGroup: "O+",
     emergencyContact: "Kyoko Hori",
     allergies: "None reported",
-    idType: "passport",
-    idFileName: "izumi_passport.jpg",
+    idType: "aadhaar",
+    idFileName: "izumi_aadhaar.jpg",
     dob: "2000-10-17",
     phone: "+81 90-9876-5432",
     address: "7-2 Hanakomachi, Shinjuku, Tokyo",
@@ -321,205 +319,9 @@ export const seedPatientData = [
       },
     ],
     medications: [
-      { name: "Ibuprofen 400mg", status: "As needed" }
+      { name: "Ibuprofen", status: "Only when required" },
     ],
     implants: { type: "None", count: 0 },
-  },
-
-  {
-    id: "P011",
-    name: "Yuki Yoshikawa",
-    email: "yuki.yoshikawa@example.com",
-    password: "yuki123",
-    healthStatus: "Stable",
-    bloodGroup: "B+",
-    emergencyContact: "MIKI Yoshikawa",
-    allergies: "None reported",
-    idType: "passport",
-    idFileName: "yuki_passport.jpg",
-    dob: "2008-07-15",
-    phone: "+81 90-1111-1111",
-    address: "Yoshikawa Residence, Tokyo",
-    registeredAt: "2026-04-12T08:00:00.000Z",
-    medicalHistory: [
-      {
-        title: "Routine School Health Check",
-        date: "2026-04-12",
-        details: "Routine health examination with no significant findings."
-      },
-      {
-        title: "Back Injury",
-        date: "2026-09-05",
-        details: "Minor back injury sustained during physical activity. Prescribed rest and pain management."
-      }
-    ],
-    medications: [
-      { name: "Ibuprofen 400mg", status: "As needed" }
-    ],
-    implants: {
-      type: "None",
-      count: 0
-    }
-  },
-
-  {
-    id: "P012",
-    name: "Tooru Ishikawa",
-    email: "tooru.ishikawa@example.com",
-    password: "tooru123",
-    healthStatus: "Stable",
-    bloodGroup: "A-",
-    emergencyContact: "Ayane Ishikawa",
-    allergies: "None reported",
-    idType: "passport",
-    idFileName: "tooru_passport.jpg",
-    registeredAt: "2026-04-15T08:00:00.000Z",
-    medicalHistory: [
-      {
-        title: "Sports Health Check",
-        date: "2026-04-15",
-        details: "Routine examination following school sports activities."
-      }
-    ],
-    medications: [],
-    implants: {
-      type: "None",
-      count: 0
-    }
-  },
-
-  {
-    id: "P013",
-    name: "Kakeru Sengoku",
-    email: "kakeru.sengoku@example.com",
-    password: "sengoku123",
-    healthStatus: "Stable",
-    bloodGroup: "AB+",
-    emergencyContact: "Kozue Sengoku",
-    allergies: "None reported",
-    idType: "passport",
-    idFileName: "kakeru_passport.jpg",
-    registeredAt: "2026-04-18T08:00:00.000Z",
-    medicalHistory: [
-      {
-        title: "Annual Health Examination",
-        date: "2026-04-18",
-        details: "Routine school medical examination."
-      }
-    ],
-    medications: [],
-    implants: {
-      type: "None",
-      count: 0
-    }
-  },
-
-  {
-    id: "P014",
-    name: "Remi Ayasaki",
-    email: "remi.ayasaki@example.com",
-    password: "remi123",
-    healthStatus: "Stable",
-    bloodGroup: "B+",
-    emergencyContact: "Ken Ayasaki",
-    allergies: "None reported",
-    idType: "passport",
-    idFileName: "remi_passport.jpg",
-    registeredAt: "2026-04-20T08:00:00.000Z",
-    medicalHistory: [
-      {
-        title: "Routine Health Check",
-        date: "2026-04-20",
-        details: "Routine school health assessment."
-      }
-    ],
-    medications: [
-      { name: "Ibuprofen 400mg", status: "As needed" }
-    ],
-    implants: {
-      type: "None",
-      count: 0
-    }
-  },
-
-  {
-    id: "P015",
-    name: "Sakura Kono",
-    email: "sakura.kono@example.com",
-    password: "sakura123",
-    healthStatus: "Stable",
-    bloodGroup: "A+",
-    emergencyContact: "Shintaro Kono",
-    allergies: "None reported",
-    idType: "passport",
-    idFileName: "sakura_passport.jpg",
-    registeredAt: "2026-04-22T08:00:00.000Z",
-    medicalHistory: [
-      {
-        title: "Routine Health Check",
-        date: "2026-04-22",
-        details: "Routine school medical examination."
-      }
-    ],
-    medications: [
-      { name: "Ibuprofen 400mg", status: "As needed" }
-    ],
-    implants: {
-      type: "None",
-      count: 0
-    }
-  },
-
-  {
-    id: "P016",
-    name: "Shu Iura",
-    email: "shu.iura@example.com",
-    password: "shu123",
-    healthStatus: "Stable",
-    bloodGroup: "O+",
-    emergencyContact: "Modoko Iura",
-    allergies: "None reported",
-    idType: "passport",
-    idFileName: "shu_passport.jpg",
-    registeredAt: "2026-04-25T08:00:00.000Z",
-    medicalHistory: [
-      {
-        title: "Routine Health Check",
-        date: "2026-04-25",
-        details: "Routine school health assessment."
-      }
-    ],
-    medications: [],
-    implants: {
-      type: "None",
-      count: 0
-    }
-  },
-
-  {
-    id: "P017",
-    name: "Akane Yanagi",
-    email: "akane.yanagi@example.com",
-    password: "akane123",
-    healthStatus: "Stable",
-    bloodGroup: "AB-",
-    emergencyContact: "Modoru Yannagi",
-    allergies: "None reported",
-    idType: "passport",
-    idFileName: "akane_passport.jpg",
-    registeredAt: "2026-04-28T08:00:00.000Z",
-    medicalHistory: [
-      {
-        title: "Routine Health Check",
-        date: "2026-04-28",
-        details: "Routine school medical examination."
-      }
-    ],
-    medications: [],
-    implants: {
-      type: "None",
-      count: 0
-    }
   },
 ];
 

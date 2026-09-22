@@ -1,30 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 import { registerPatient, getAllPatients } from "./lib/patients";
 import { seedPatients } from "./lib/patientData";
-import { initProtonSession, getSyncStatus } from "./lib/cloudStorage";
-import { PROTON_CONFIG } from "./lib/protonConfig";
-import { PrescriptionModal } from "./components/PrescriptionModal";
-import { PrescriptionsList } from "./components/PrescriptionsList";
-import { getPendingPrescriptionsByDoctor } from "./lib/prescriptions";
 
 // Seed demo patients into localStorage on first load
 seedPatients();
 
-const staffUsers = [
-  {
-    email: "doctor@example.com",
-    password: "doctor123",
-    name: "Dr. Sarah Wilson",
-  },
-  {
-    email: "shoko@example.com",
-    password: "shoko123",
-    name: "Dr. Shoko Ieiri",
-    specialty: "Medical Specialist",
-    affiliation: "Tokyo Jujutsu High",
-  },
-];
+const staffUser = {
+  email: "doctor@example.com",
+  password: "doctor123",
+  name: "Dr. Sarah Wilson",
+};
 
 function App() {
   const [page, setPage] = useState("login");
@@ -35,84 +21,34 @@ function App() {
   const [error, setError] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [syncStatus, setSyncStatus] = useState(null);
-  const [appError, setAppError] = useState(null);
 
-  // Log that app loaded
-  React.useEffect(() => {
-    console.log('App component mounted');
-  }, []);
-
-  // Initialize cloud sync on app load
-  useEffect(() => {
-    const initCloud = async () => {
-      try {
-        console.log('Initializing cloud sync...');
-        if (PROTON_CONFIG.enableCloudSync) {
-          // Initialize with configured Proton credentials
-          const session = await initProtonSession(
-            PROTON_CONFIG.email,
-            PROTON_CONFIG.apiKey
-          );
-          setSyncStatus(getSyncStatus());
-          
-          if (PROTON_CONFIG.debug) {
-            console.log('Cloud sync initialized:', getSyncStatus());
-          }
-        } else {
-          console.log('Cloud sync disabled, using localStorage');
-        }
-      } catch (err) {
-        console.error('Failed to initialize cloud sync:', err);
-        setAppError('Cloud initialization error, using local storage');
-      }
-    };
-    initCloud();
-  }, []);
-
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    try {
-      if (loginType === "staff") {
-        const staffMatch = staffUsers.find(
-          (s) => s.email === email && s.password === password
-        );
-        if (staffMatch) {
-          setCurrentUser(staffMatch);
-          setLoggedIn(true);
-        } else {
-          setError("Invalid staff credentials.");
-        }
+    if (loginType === "staff") {
+      if (email === staffUser.email && password === staffUser.password) {
+        setCurrentUser(staffUser);
+        setLoggedIn(true);
       } else {
-        // Patient login — check against all stored patients
-        try {
-          const patients = await getAllPatients();
-          const match = patients.find(
-            (p) =>
-              p.email.toLowerCase() === email.toLowerCase() &&
-              p.password === password
-          );
-
-          if (match) {
-            setCurrentUser(match);
-            setLoggedIn(true);
-          } else {
-            setError("Invalid patient email or password.");
-          }
-        } catch (fetchErr) {
-          console.error('Error fetching patients:', fetchErr);
-          setError("Failed to fetch patient data. Please try again.");
-        }
+        setError("Invalid staff credentials.");
       }
-    } catch (err) {
-      setError("Login failed. Please try again.");
-      console.error(err);
-    } finally {
-      setLoading(false);
+      return;
+    }
+
+    // Patient login — check against all stored patients
+    const patients = getAllPatients();
+    const match = patients.find(
+      (p) =>
+        p.email.toLowerCase() === email.toLowerCase() &&
+        p.password === password
+    );
+
+    if (match) {
+      setCurrentUser(match);
+      setLoggedIn(true);
+    } else {
+      setError("Invalid patient email or password.");
     }
   };
 
@@ -122,29 +58,6 @@ function App() {
     setEmail("");
     setPassword("");
   };
-
-  if (appError) {
-    return (
-      <div className="app">
-        <div style={{
-          padding: '40px',
-          textAlign: 'center',
-          color: '#d32f2f',
-          fontSize: '16px',
-          backgroundColor: '#ffebee',
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <h2>⚠ Error</h2>
-          <p>{appError}</p>
-          <button onClick={() => window.location.reload()}>Reload Page</button>
-        </div>
-      </div>
-    );
-  }
 
   if (loggedIn) {
     return loginType === "patient" ? (
@@ -323,8 +236,8 @@ function App() {
                 </div>
               )}
 
-              <button className="login-button" type="submit" disabled={loading}>
-                {loading ? "Signing in..." : "Sign in"}
+              <button className="login-button" type="submit">
+                Sign in
                 <span>→</span>
               </button>
 
@@ -556,27 +469,8 @@ function PatientDashboard({ user, logout }) {
 function StaffDashboard({ user, logout }) {
   const [query, setQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [allPatients, setAllPatients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
-  const [prescriptionPatient, setPrescriptionPatient] = useState(null);
-  const [prescriptionRefresh, setPrescriptionRefresh] = useState(0);
 
-  // Load patients from cloud on mount
-  React.useEffect(() => {
-    const loadPatients = async () => {
-      setLoading(true);
-      try {
-        const patients = await getAllPatients();
-        setAllPatients(patients);
-      } catch (err) {
-        console.error('Failed to load patients:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadPatients();
-  }, []);
+  const allPatients = getAllPatients();
 
   const filtered = allPatients.filter((p) => {
     const q = query.toLowerCase();
@@ -651,13 +545,6 @@ function StaffDashboard({ user, logout }) {
             <small>+6.7% from last month</small>
           </div>
         </div>
-
-        {/* PRESCRIPTIONS LIST */}
-        <PrescriptionsList
-          doctor={user}
-          allPatients={allPatients}
-          onPrescriptionsUpdated={() => setPrescriptionRefresh(prescriptionRefresh + 1)}
-        />
 
         {/* PATIENT RECORDS TABLE */}
         <div className="patient-records-card">
@@ -753,21 +640,6 @@ function StaffDashboard({ user, logout }) {
 
       </main>
 
-      {/* PRESCRIPTION MODAL */}
-      {showPrescriptionModal && prescriptionPatient && (
-        <PrescriptionModal
-          patient={prescriptionPatient}
-          doctor={user}
-          onClose={() => {
-            setShowPrescriptionModal(false);
-            setPrescriptionPatient(null);
-          }}
-          onPrescriptionCreated={() => {
-            setPrescriptionRefresh(prescriptionRefresh + 1);
-          }}
-        />
-      )}
-
       {/* PATIENT DETAIL MODAL */}
       {selectedPatient && (
         <div
@@ -822,25 +694,6 @@ function StaffDashboard({ user, logout }) {
                 </strong>
               </div>
             </div>
-
-            <div style={{ marginTop: 20, display: 'flex', gap: 10 }}>
-              <button
-                className="btn-primary"
-                onClick={() => {
-                  setPrescriptionPatient(selectedPatient);
-                  setShowPrescriptionModal(true);
-                  setSelectedPatient(null);
-                }}
-              >
-                💊 Create Prescription
-              </button>
-              <button
-                className="btn-secondary"
-                onClick={() => setSelectedPatient(null)}
-              >
-                Close
-              </button>
-            </div>
           </div>
         </div>
       )}
@@ -892,7 +745,7 @@ function RegisterPage({ onBack }) {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!idFile) {
       setError("Please upload a valid ID proof.");
@@ -900,21 +753,16 @@ function RegisterPage({ onBack }) {
     }
     setError("");
 
-    try {
-      // Save the patient record to cloud/localStorage
-      await registerPatient({
-        name: form.name,
-        email: form.email,
-        password: form.password,
-        idType: form.idType,
-        idFileName: idFile.name,
-      });
+    // Save the patient record to localStorage
+    registerPatient({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+      idType: form.idType,
+      idFileName: idFile.name,
+    });
 
-      setSubmitted(true);
-    } catch (err) {
-      setError("Registration failed. Please try again.");
-      console.error(err);
-    }
+    setSubmitted(true);
   };
 
   if (submitted) {
