@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 import { registerPatient, getAllPatients } from "./lib/patients";
 import { seedPatients } from "./lib/patientData";
+import { initProtonSession, getSyncStatus } from "./lib/cloudStorage";
 
 // Seed demo patients into localStorage on first load
 seedPatients();
@@ -30,37 +31,56 @@ function App() {
   const [error, setError] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [syncStatus, setSyncStatus] = useState(null);
 
-  const handleLogin = (e) => {
+  // Initialize cloud sync on app load
+  useEffect(() => {
+    const initCloud = async () => {
+      // Try to connect to Proton (optional - will fallback to localStorage)
+      const session = await initProtonSession(email || 'demo@proton.me', 'demo');
+      setSyncStatus(getSyncStatus());
+    };
+    initCloud();
+  }, []);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
-    if (loginType === "staff") {
-      const staffMatch = staffUsers.find(
-        (s) => s.email === email && s.password === password
-      );
-      if (staffMatch) {
-        setCurrentUser(staffMatch);
-        setLoggedIn(true);
+    try {
+      if (loginType === "staff") {
+        const staffMatch = staffUsers.find(
+          (s) => s.email === email && s.password === password
+        );
+        if (staffMatch) {
+          setCurrentUser(staffMatch);
+          setLoggedIn(true);
+        } else {
+          setError("Invalid staff credentials.");
+        }
       } else {
-        setError("Invalid staff credentials.");
+        // Patient login — check against all stored patients
+        const patients = await getAllPatients();
+        const match = patients.find(
+          (p) =>
+            p.email.toLowerCase() === email.toLowerCase() &&
+            p.password === password
+        );
+
+        if (match) {
+          setCurrentUser(match);
+          setLoggedIn(true);
+        } else {
+          setError("Invalid patient email or password.");
+        }
       }
-      return;
-    }
-
-    // Patient login — check against all stored patients
-    const patients = getAllPatients();
-    const match = patients.find(
-      (p) =>
-        p.email.toLowerCase() === email.toLowerCase() &&
-        p.password === password
-    );
-
-    if (match) {
-      setCurrentUser(match);
-      setLoggedIn(true);
-    } else {
-      setError("Invalid patient email or password.");
+    } catch (err) {
+      setError("Login failed. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -248,8 +268,8 @@ function App() {
                 </div>
               )}
 
-              <button className="login-button" type="submit">
-                Sign in
+              <button className="login-button" type="submit" disabled={loading}>
+                {loading ? "Signing in..." : "Sign in"}
                 <span>→</span>
               </button>
 
@@ -481,8 +501,24 @@ function PatientDashboard({ user, logout }) {
 function StaffDashboard({ user, logout }) {
   const [query, setQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [allPatients, setAllPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const allPatients = getAllPatients();
+  // Load patients from cloud on mount
+  React.useEffect(() => {
+    const loadPatients = async () => {
+      setLoading(true);
+      try {
+        const patients = await getAllPatients();
+        setAllPatients(patients);
+      } catch (err) {
+        console.error('Failed to load patients:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadPatients();
+  }, []);
 
   const filtered = allPatients.filter((p) => {
     const q = query.toLowerCase();
@@ -757,7 +793,7 @@ function RegisterPage({ onBack }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!idFile) {
       setError("Please upload a valid ID proof.");
@@ -765,16 +801,21 @@ function RegisterPage({ onBack }) {
     }
     setError("");
 
-    // Save the patient record to localStorage
-    registerPatient({
-      name: form.name,
-      email: form.email,
-      password: form.password,
-      idType: form.idType,
-      idFileName: idFile.name,
-    });
+    try {
+      // Save the patient record to cloud/localStorage
+      await registerPatient({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        idType: form.idType,
+        idFileName: idFile.name,
+      });
 
-    setSubmitted(true);
+      setSubmitted(true);
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+      console.error(err);
+    }
   };
 
   if (submitted) {
