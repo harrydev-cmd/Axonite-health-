@@ -34,21 +34,27 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [syncStatus, setSyncStatus] = useState(null);
+  const [appError, setAppError] = useState(null);
 
   // Initialize cloud sync on app load
   useEffect(() => {
     const initCloud = async () => {
-      if (PROTON_CONFIG.enableCloudSync) {
-        // Initialize with configured Proton credentials
-        const session = await initProtonSession(
-          PROTON_CONFIG.email,
-          PROTON_CONFIG.apiKey
-        );
-        setSyncStatus(getSyncStatus());
-        
-        if (PROTON_CONFIG.debug) {
-          console.log('Cloud sync initialized:', getSyncStatus());
+      try {
+        if (PROTON_CONFIG.enableCloudSync) {
+          // Initialize with configured Proton credentials
+          const session = await initProtonSession(
+            PROTON_CONFIG.email,
+            PROTON_CONFIG.apiKey
+          );
+          setSyncStatus(getSyncStatus());
+          
+          if (PROTON_CONFIG.debug) {
+            console.log('Cloud sync initialized:', getSyncStatus());
+          }
         }
+      } catch (err) {
+        console.error('Failed to initialize cloud sync:', err);
+        setAppError('Cloud initialization error, using local storage');
       }
     };
     initCloud();
@@ -72,18 +78,23 @@ function App() {
         }
       } else {
         // Patient login — check against all stored patients
-        const patients = await getAllPatients();
-        const match = patients.find(
-          (p) =>
-            p.email.toLowerCase() === email.toLowerCase() &&
-            p.password === password
-        );
+        try {
+          const patients = await getAllPatients();
+          const match = patients.find(
+            (p) =>
+              p.email.toLowerCase() === email.toLowerCase() &&
+              p.password === password
+          );
 
-        if (match) {
-          setCurrentUser(match);
-          setLoggedIn(true);
-        } else {
-          setError("Invalid patient email or password.");
+          if (match) {
+            setCurrentUser(match);
+            setLoggedIn(true);
+          } else {
+            setError("Invalid patient email or password.");
+          }
+        } catch (fetchErr) {
+          console.error('Error fetching patients:', fetchErr);
+          setError("Failed to fetch patient data. Please try again.");
         }
       }
     } catch (err) {
@@ -100,6 +111,29 @@ function App() {
     setEmail("");
     setPassword("");
   };
+
+  if (appError) {
+    return (
+      <div className="app">
+        <div style={{
+          padding: '40px',
+          textAlign: 'center',
+          color: '#d32f2f',
+          fontSize: '16px',
+          backgroundColor: '#ffebee',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <h2>⚠ Error</h2>
+          <p>{appError}</p>
+          <button onClick={() => window.location.reload()}>Reload Page</button>
+        </div>
+      </div>
+    );
+  }
 
   if (loggedIn) {
     return loginType === "patient" ? (
