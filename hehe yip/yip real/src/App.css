@@ -1233,6 +1233,10 @@ input {
   position: relative;
   box-shadow: 0 25px 60px rgba(10,40,38,0.18);
   text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-close {
