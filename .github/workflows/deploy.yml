@@ -30,16 +30,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: npm
-          cache-dependency-path: "./hehe yip/yip real/package-lock.json"
 
       - name: Install dependencies
-        working-directory: "./hehe yip/yip real"
         run: npm ci
+        working-directory: hehe\ yip/yip\ real
 
       - name: Build
-        working-directory: "./hehe yip/yip real"
         run: npm run build
+        working-directory: hehe\ yip/yip\ real
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -47,7 +45,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./hehe yip/yip real/dist"
+          path: hehe\ yip/yip\ real/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
